@@ -3,4 +3,5 @@ export class CreateDeviceDto {
   latitude: number;
   longitude: number;
   isActive: boolean;
+  city: number;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Device } from 'src/_shared/entities';
+import { City, Device } from 'src/_shared/entities';
 import { Repository } from 'typeorm';
 import { CreateDeviceDto } from './dto/create-device.dto';
 import { UpdateDeviceDto } from './dto/update-device.dto';
@@ -10,15 +10,21 @@ export class DevicesService {
   constructor(
     @InjectRepository(Device)
     private devicesRepository: Repository<Device>,
+    @InjectRepository(City)
+    private citiesRepository: Repository<City>,
   ) {}
 
-  create(createDeviceDto: CreateDeviceDto) {
+  async create(createDeviceDto: CreateDeviceDto) {
     const device = new Device();
 
     device.isActive = createDeviceDto.isActive;
     device.latitude = createDeviceDto.latitude;
     device.longitude = createDeviceDto.longitude;
     device.name = createDeviceDto.name;
+
+    device.city = await this.citiesRepository.findOne({
+      where: { id: createDeviceDto.city },
+    });
 
     return this.devicesRepository.save(device);
   }
