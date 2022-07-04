@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Sensor {
+export class Device {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,7 +23,7 @@ export class Sensor {
   @Column({ default: true })
   isActive: boolean;
 
-  @OneToMany((_) => Measurement, (measure) => measure.sensor)
+  @OneToMany((_) => Measurement, (measure) => measure.device)
   measurements: Measurement[];
 }
 
@@ -41,11 +41,11 @@ export class Measurement {
   @Column()
   value: number;
 
-  @ManyToOne(() => Sensor, (sensor) => sensor.measurements)
-  public sensor!: Sensor;
+  @ManyToOne(() => Device, (device) => device.measurements)
+  public device!: Device;
 }
 
-enum MeasurementType {
+export enum MeasurementType {
   Pm10,
   Pm25,
   Temperature,

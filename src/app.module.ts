@@ -3,21 +3,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SensorsModule } from './sensors/sensors.module';
 import { MeasurementsModule } from './measurements/measurements.module';
-import { Measurement, Sensor } from './_shared/entities';
+import { Measurement, Device } from './_shared/entities';
+import { DevicesModule } from './devices/devices.module';
 
 @Module({
   imports: [
-    SensorsModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       port: 3306,
       ...getConnection(),
-      entities: [Sensor, Measurement],
+      entities: [Device, Measurement],
       synchronize: true,
     }),
     MeasurementsModule,
+    DevicesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
