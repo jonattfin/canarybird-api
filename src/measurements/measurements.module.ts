@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MeasurementsService } from './measurements.service';
+import { HttpModule } from '@nestjs/axios';
 import { MeasurementsController } from './measurements.controller';
 import { Device, Measurement } from 'src/_shared/entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { WebMeasurementsService } from './web-measurements.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Measurement, Device])],
+  imports: [TypeOrmModule.forFeature([Measurement, Device]), HttpModule],
   controllers: [MeasurementsController],
-  providers: [MeasurementsService],
+  providers: [WebMeasurementsService],
 })
 export class MeasurementsModule {}
