@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
@@ -20,6 +20,7 @@ import { CitiesModule } from './cities/cities.module';
     MeasurementsModule,
     DevicesModule,
     CitiesModule,
+    CacheModule.register()
   ],
   controllers: [AppController],
   providers: [AppService],

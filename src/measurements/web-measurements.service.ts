@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import _ from 'lodash';
 
 @Injectable()
 export class WebMeasurementsService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async findAll(city: string, measurementType: string) {
     const devices = await lastValueFrom(
@@ -15,15 +19,20 @@ export class WebMeasurementsService {
     const { from, to } = getDates();
 
     const allMeasurementsPromises = devices.data.map(async (device) => {
-      const measurements = await lastValueFrom(
-        this.httpService.get(
-          `https://${city}.pulse.eco/rest/avgData/day?sensorId=${device.sensorId}&type=${measurementType}&from=${from}&to=${to}`,
-        ),
-      );
+      const urlKey = `https://${city}.pulse.eco/rest/avgData/day?sensorId=${device.sensorId}&type=${measurementType}&from=${from}&to=${to}`;
 
+      let cachedValue = (await this.cacheManager.get(urlKey)) as any[];
+
+      if (!cachedValue || cachedValue.length == 0) {
+        const measurements = await lastValueFrom(this.httpService.get(urlKey));
+        await this.cacheManager.set(urlKey, measurements.data);
+
+        cachedValue = (await this.cacheManager.get(urlKey)) as any[];
+      }
+      
       return {
         id: device.sensorId,
-        data: measurements.data.map((d) => {
+        data: cachedValue.map((d) => {
           return {
             x: new Date(d.stamp),
             y: parseInt(d.value),
