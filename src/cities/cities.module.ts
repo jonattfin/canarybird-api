@@ -7,7 +7,7 @@ import { WebCitiesService } from './web-cities.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([City]),
+    // TypeOrmModule.forFeature([City]),
     HttpModule
   ],
   controllers: [CitiesController],

@@ -7,7 +7,7 @@ import { WebMeasurementsService } from './web-measurements.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Measurement, Device]),
+    // TypeOrmModule.forFeature([Measurement, Device]),
     HttpModule,
     CacheModule.register(),
   ],
